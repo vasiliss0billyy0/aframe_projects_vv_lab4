@@ -1,0 +1,133 @@
+<!DOCTYPE html> 
+
+<html> 
+
+  <head> 
+
+    <title>Interactive Rotating Object in A-Frame</title> 
+
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script> 
+
+  </head> 
+
+  <body> 
+
+    <!-- A-Frame Scene --> 
+
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: .rotatable"> 
+
+       
+
+      <!-- Camera with cursor for targeting --> 
+
+      <a-entity camera look-controls> 
+
+        <a-entity cursor="fuse: false; fuseTimeout: 500" 
+
+                  position="0 0 -1" 
+
+                  class="clickable" 
+
+                  geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" 
+
+                  material="color: black; shader: flat"> 
+
+        </a-entity> 
+
+      </a-entity> 
+
+       
+
+      <!-- The object to rotate --> 
+
+      <a-box id="rotatingBox" class="rotatable" 
+
+             position="0 1.5 -3" 
+
+             rotation="0 45 0" 
+
+             color="#4CC3D9" 
+
+             depth="0.5" 
+
+             height="0.5" 
+
+             width="0.5" 
+
+             data-rotating="false"> 
+
+      </a-box> 
+
+       
+
+      <!-- Ground --> 
+
+      <a-plane rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane> 
+
+       
+
+      <!-- Scripts for interactivity --> 
+
+      <script> 
+
+        AFRAME.registerComponent('rotation-toggle', { 
+
+          schema: { 
+
+            rotating: {type: 'boolean', default: false}, 
+
+            speed: {type: 'number', default: 60} // degrees per second 
+
+          }, 
+
+  
+
+          init: function () { 
+
+            this.isRotating = false; 
+
+            this.el.addEventListener('mouseenter', () => { 
+
+              this.isRotating = true; 
+
+            }); 
+
+            this.el.addEventListener('mouseleave', () => { 
+
+              this.isRotating = false; 
+
+            }); 
+
+          }, 
+
+  
+
+          tick: function (time, deltaTime) { 
+
+            if (this.isRotating) { 
+
+              // Rotate around Y axis 
+
+              this.el.object3D.rotation.y += THREE.Math.degToRad(this.data.speed * deltaTime / 1000); 
+
+            } 
+
+          } 
+
+        }); 
+
+  
+
+        // Attach the component to the box 
+
+        document.querySelector('#rotatingBox').setAttribute('rotation-toggle', ''); 
+
+      </script> 
+
+    </a-scene> 
+
+  </body> 
+
+</html> 
+
+ 
